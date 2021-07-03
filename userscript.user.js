@@ -102,7 +102,7 @@ observeDOM( document.getElementById("queue"), function(m){
 
 function getTimeUntil(){
     var time = 0;
-    Array.from(document.getElementsByClassName("queue_entry")).forEach(li => {
+    Array.from(document.getElementById("queue").children).forEach(li => {
         if(hasClass(li, "queue_played") && hasClass(li.children[2], "qe_time_until") || hasClass(li, "queue_active") && hasClass(li.children[2], "qe_time_until")){
             if(li.children[2].innerHTML != ""){li.children[2].innerHTML = "";}
         }
