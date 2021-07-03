@@ -103,28 +103,30 @@ observeDOM( document.getElementById("queue"), function(m){
 function getTimeUntil(){
     var time = 0;
     Array.from(document.getElementById("queue").children).forEach(li => {
-        if(hasClass(li, "queue_played") && hasClass(li.children[2], "qe_time_until") || hasClass(li, "queue_active") && hasClass(li.children[2], "qe_time_until")){
-            if(li.children[2].innerHTML != ""){li.children[2].innerHTML = "";}
-        }
-        if(!hasClass(li, "queue_played")){
-            if(!hasClass(li, "queue_active")){
-                if(li.children[2]){
-                    if(hasClass(li.children[2], "qe_time_until") && li.children[2].innerHTML != "Time until: "+fancyTimeFormat(time)+" |"){
-                        li.children[2].innerHTML = "Time until: "+fancyTimeFormat(time)+" |";
-                    }
-                    else if(!hasClass(li.children[2], "qe_time_until")){
-                        li.children[1].insertAdjacentHTML("afterend", "<span class='qe_time qe_time_until'>Time until: "+fancyTimeFormat(time)+" |</span>");
-                        li.onmouseover = function(){li.children[2].style.visibility = "visible";}
-                        li.onmouseleave = function(){li.children[2].style.visibility = "hidden";}
+        if(hasClass(li, "queue_entry")){
+            if(hasClass(li, "queue_played") && hasClass(li.children[2], "qe_time_until") || hasClass(li, "queue_active") && hasClass(li.children[2], "qe_time_until")){
+                if(li.children[2].innerHTML != ""){li.children[2].innerHTML = "";}
+            }
+            if(!hasClass(li, "queue_played")){
+                if(!hasClass(li, "queue_active")){
+                    if(li.children[2]){
+                        if(hasClass(li.children[2], "qe_time_until") && li.children[2].innerHTML != "Time until: "+fancyTimeFormat(time)+" |"){
+                            li.children[2].innerHTML = "Time until: "+fancyTimeFormat(time)+" |";
+                        }
+                        else if(!hasClass(li.children[2], "qe_time_until")){
+                            li.children[1].insertAdjacentHTML("afterend", "<span class='qe_time qe_time_until'>Time until: "+fancyTimeFormat(time)+" |</span>");
+                            li.onmouseover = function(){li.children[2].style.visibility = "visible";}
+                            li.onmouseleave = function(){li.children[2].style.visibility = "hidden";}
+                        }
                     }
                 }
-            }
-            var currentDuration = li.children[1].innerHTML.split(":");
-            if(currentDuration[2]){
-                time += (+currentDuration[0]) * 60 * 60 + Number(+currentDuration[1]) * 60 + Number(+currentDuration[2]);
-            }
-            else{
-                time += (+currentDuration[0]) * 60 + Number(+currentDuration[1]);
+                var currentDuration = li.children[1].innerHTML.split(":");
+                if(currentDuration[2]){
+                    time += (+currentDuration[0]) * 60 * 60 + Number(+currentDuration[1]) * 60 + Number(+currentDuration[2]);
+                }
+                else{
+                    time += (+currentDuration[0]) * 60 + Number(+currentDuration[1]);
+                }
             }
         }
     });
