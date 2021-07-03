@@ -30,13 +30,13 @@ GM_addStyle ( `
 ` );
 
 document.getElementById("videocontrols").insertAdjacentHTML("afterbegin", "<button class='btn btn-sm btn-default' id='toggle_button'>Export</span></button>");
-document.body.innerHTML += `
+document.body.insertAdjacentHTML("beforeend", `
     <div id="export_modal" class="modal fade in" aria-hidden="false" style="display: block; padding-right: 10px;">
     <div id="modal_backdrop" class="modal-backdrop fade in" style="height: 2088px;"></div>
     <div class="modal-dialog"><div class="modal-content">
     <div class="modal-header"><button class="close" id="close_button" data-dismiss="modal" aria-hidden="true">×</button>
     <h3>Playlist URLs</h3></div><div class="modal-body"><button class='btn btn-sm btn-default' id="toggle_export_titles_btn">Titles</button><Textarea id="playlist_area" class="form-control" type="text"></Textarea></div>
-    <div class="modal-footer"></div></div></div></div>`;
+    <div class="modal-footer"></div></div></div></div>`);
 
 var current = "", export_list = false, toggle_export_titles = true;
 
