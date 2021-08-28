@@ -6,7 +6,7 @@
 // @include https://cytu.be/r/*
 // @include https://www.cytu.be/r/*
 // @run-at document-end
-// @version 0.0.2
+// @version 0.0.1
 // ==/UserScript==
 
 GM_addStyle ( `
@@ -83,15 +83,8 @@ observeDOM( document.getElementById("queue"), function(m){
     });
 
     Array.from(removedNodes).forEach(li => {
-        if(li == current || hasClass(li, "queue_active")){
+        if(li == current){
             played.push(li);
-        }
-    });
-
-    var c = 0;
-    Array.from(document.getElementById("queue").children).forEach(li => {
-        if(hasClass(li, "queue_entry") && !hasClass(li, "queue_played")){
-            c++;
         }
     });
 
@@ -102,11 +95,6 @@ observeDOM( document.getElementById("queue"), function(m){
         }
         if(played[0] != null && active != null){
             active.insertAdjacentHTML("beforebegin", "<li class='queue_entry queue_temp queue_played'>"+played[0].innerHTML+"</li>");
-        }
-    }
-    else{
-        if(c == 0 && played[0] != null){
-            current = document.getElementById("queue").insertAdjacentHTML("beforeend", "<li class='queue_entry queue_temp queue_played'>"+played[0].innerHTML+"</li>")
         }
     }
     getTimeUntil();
