@@ -69,7 +69,7 @@ var observeDOM = (function(){
   }
 })()
 
-observeDOM( document.getElementById("queue"), function(m){
+setTimeout(function(){observeDOM( document.getElementById("queue"), function(m){
     var addedNodes = [], removedNodes = [], played = [];
 
     m.forEach(record => record.addedNodes.length & addedNodes.push(...record.addedNodes))
@@ -110,7 +110,7 @@ observeDOM( document.getElementById("queue"), function(m){
         }
     }
     getTimeUntil();
-});
+});},3000);
 
 function getTimeUntil(){
     var time = 0;
