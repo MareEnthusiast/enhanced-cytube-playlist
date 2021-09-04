@@ -6,7 +6,7 @@
 // @include https://cytu.be/r/*
 // @include https://www.cytu.be/r/*
 // @run-at document-end
-// @version 0.0.1
+// @version 0.0.2
 // ==/UserScript==
 
 GM_addStyle ( `
@@ -23,6 +23,17 @@ GM_addStyle ( `
     #export_modal {
         visibility: hidden;
     }
+    #toggle_played_btn {
+        width:100%;
+        font-size: 16px;
+        padding:5px;
+        display:block;
+    }
+    #played_area {
+        border-left: 1px solid;
+        border-top: 1px solid;
+        border-right: 1px solid;
+    }
     .qe_time_until {
         visibility: hidden;
         padding-right: 5px;
@@ -30,6 +41,8 @@ GM_addStyle ( `
 ` );
 
 document.getElementById("videocontrols").insertAdjacentHTML("afterbegin", "<button class='btn btn-sm btn-default' id='toggle_button'>Export</span></button>");
+document.getElementById("queue").insertAdjacentHTML("beforebegin", "<div id='played_area'><span class='pointer glyphicon glyphicon-chevron-down' id='toggle_played_btn' title='Show played videos'></span><ul class='videolist' id='played'></ul></div>");
+document.getElementById("played").style.maxHeight="0px";
 document.body.insertAdjacentHTML("beforeend", `
     <div id="export_modal" class="modal fade in" aria-hidden="false" style="display: block; padding-right: 10px;">
     <div id="modal_backdrop" class="modal-backdrop fade in" style="height: 2088px;"></div>
@@ -39,11 +52,31 @@ document.body.insertAdjacentHTML("beforeend", `
     <div class="modal-footer"></div></div></div></div>`);
 
 var current = "", export_list = false, toggle_export_titles = true;
+var toggleBtn = document.getElementById("toggle_played_btn");
+var queue = document.getElementById("queue");
+var played = document.getElementById("played");
 
 document.getElementById("export_modal").style.visibility="hidden";
 document.getElementById("toggle_button").onclick = function(){toggle();};
 document.getElementById("close_button").onclick = function(){toggle();};
 document.getElementById("modal_backdrop").onclick = function(){toggle();};
+
+document.getElementById("toggle_played_btn").onclick = function(){
+    if(queue.style.maxHeight=="26px"){
+        played.style.maxHeight = "0px";
+        queue.style.maxHeight = "500px";
+        queue.style.overflowY = "auto";
+        toggleBtn.classList = "pointer glyphicon glyphicon-chevron-down";
+    }
+    else{
+        played.style.maxHeight = "474px";
+        queue.style.maxHeight = "26px";
+        queue.style.overflowY = "hidden";
+        played.scrollTop = played.scrollHeight;
+        toggleBtn.classList = "pointer glyphicon glyphicon-chevron-up";
+    }
+}
+
 document.getElementById("toggle_export_titles_btn").onclick = function(){
     !toggle_export_titles ? toggle_export_titles = true : toggle_export_titles = false;
     playlistRefresh();
@@ -69,8 +102,8 @@ var observeDOM = (function(){
   }
 })()
 
-observeDOM( document.getElementById("queue"), function(m){
-    var addedNodes = [], removedNodes = [], played = [];
+observeDOM( queue, function(m){
+    var addedNodes = [], removedNodes = [];
 
     m.forEach(record => record.addedNodes.length & addedNodes.push(...record.addedNodes))
     m.forEach(record => record.removedNodes.length & removedNodes.push(...record.removedNodes))
@@ -83,26 +116,24 @@ observeDOM( document.getElementById("queue"), function(m){
     });
 
     Array.from(removedNodes).forEach(li => {
-        if(li == current){
-            played.push(li);
+        if(hasClass(li, "queue_entry")){
+            if(li == current || document.getElementById("queue").childElementCount == 0){
+                played.insertAdjacentHTML("beforeend", "<li class='queue_entry queue_temp queue_played'>"+li.innerHTML+"</li>");
+                played.scrollTop = played.scrollHeight;
+            }
         }
     });
 
     var active = document.getElementsByClassName("queue_active")[0]
-    if(active){
-        if(current != active){
-            current = active;
-        }
-        if(played[0] != null && active != null){
-            active.insertAdjacentHTML("beforebegin", "<li class='queue_entry queue_temp queue_played'>"+played[0].innerHTML+"</li>");
-        }
+    if(active && current != active){
+        current = active;
     }
     getTimeUntil();
 });
 
 function getTimeUntil(){
     var time = 0;
-    Array.from(document.getElementById("queue").children).forEach(li => {
+    Array.from(queue.children).forEach(li => {
         if(hasClass(li, "queue_entry")){
             if(hasClass(li, "queue_played") && hasClass(li.children[2], "qe_time_until") || hasClass(li, "queue_active") && hasClass(li.children[2], "qe_time_until")){
                 if(li.children[2].innerHTML != ""){li.children[2].innerHTML = "";}
@@ -134,7 +165,15 @@ function getTimeUntil(){
 
 function playlistRefresh(){
     document.getElementById("playlist_area").value = "";
-    Array.from(document.getElementById("queue").children).forEach(li => {
+    Array.from(played.children).forEach(li => {
+        if(toggle_export_titles){
+            document.getElementById("playlist_area").value += li.children[0].text + "\n" + li.children[0].href + "\n\n";
+        }
+        else{
+            document.getElementById("playlist_area").value += li.children[0].href + "\n";
+        }
+    });
+    Array.from(queue.children).forEach(li => {
         if(toggle_export_titles){
             document.getElementById("playlist_area").value += li.children[0].text + "\n" + li.children[0].href + "\n\n";
         }
