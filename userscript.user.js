@@ -8,7 +8,7 @@
 // @include https://cytu.be/r/*
 // @include https://www.cytu.be/r/*
 // @run-at document-end
-// @version 0.0.2
+// @version 0.0.3
 // ==/UserScript==
 
 GM_addStyle ( `
@@ -75,6 +75,7 @@ document.getElementById("toggle_played_btn").onclick = function(){
         queue.style.maxHeight = "26px";
         queue.style.overflowY = "hidden";
         played.scrollTop = played.scrollHeight;
+        queue.scrollTop = 0;
         toggleBtn.classList = "pointer glyphicon glyphicon-chevron-up";
     }
 }
