@@ -3,6 +3,8 @@
 // @namespace enhancedplaylist
 // @description Extra features for CyTube
 // @grant GM_addStyle
+// @updateURL    https://raw.githubusercontent.com/MareEnthusiast/enhanced-cytube-playlist/main/userscript.user.js
+// @downloadURL  https://raw.githubusercontent.com/MareEnthusiast/enhanced-cytube-playlist/main/userscript.user.js
 // @include https://cytu.be/r/*
 // @include https://www.cytu.be/r/*
 // @run-at document-end
